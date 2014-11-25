@@ -114,12 +114,26 @@ X.renderer = function() {
   this._camera = null;
 
   /**
+   * A factory that can create a camera when init is called.
+   * 
+   * @public
+   */
+  this._cameraFactory = null;
+  
+  /**
    * The interactor of this renderer.
    *
    * @type {?X.interactor}
    * @protected
    */
   this._interactor = null;
+  
+  /**
+   * A factory that can create an interactor when init is called.
+   * 
+   * @public
+   */
+  this._interactorFactory = null;
 
   /**
    * An X.array containing the displayable objects of this renderer. The object
@@ -500,6 +514,26 @@ X.renderer.prototype.__defineGetter__('camera', function() {
 
 
 /**
+ * Sets the factory used to create the interactor in init.
+ */
+X.renderer.prototype.__defineSetter__('interactorFactory', function(_interactorFactory) {
+	
+ this._interactorFactory = _interactorFactory;
+
+});
+
+
+/**
+ * Sets the factory used to create the camera in init.
+ */
+X.renderer.prototype.__defineSetter__('cameraFactory', function(_cameraFactory) {
+	
+ this._cameraFactory = _cameraFactory;
+
+});
+
+
+/**
  * Check if the initial loading of all objects was completed. This value gets
  * set immediately after the onShowtime function is executed.
  *
@@ -736,13 +770,19 @@ X.renderer.prototype.init = function(_contextName) {
 
   //
   // create a new interactor
-  var _interactor = new X.interactor3D(this._canvas);
+  var _interactor = null;
+  if (this._interactorFactory) {
+    _interactor = this._interactorFactory(this._canvas);
+  }
+  if (!_interactor) {
+    _interactor = new X.interactor3D(this._canvas);
+	  
+	// in the 2d case, create a 2d interactor (of course..)
+    if (_contextName == '2d') {
 
-  // in the 2d case, create a 2d interactor (of course..)
-  if (_contextName == '2d') {
+      _interactor = new X.interactor2D(this._canvas);
 
-    _interactor = new X.interactor2D(this._canvas);
-
+    }
   }
   // initialize it and..
   _interactor.init();
@@ -763,13 +803,20 @@ X.renderer.prototype.init = function(_contextName) {
   //
   // create a new camera
   // width and height are required to calculate the perspective
-  var _camera = new X.camera3D(this._width, this._height);
-
-  if (_contextName == '2d') {
-    _camera = new X.camera2D(this._width, this._height);
+  var _camera = null;
+  if (this._cameraFactory) {
+	  _camera = this._cameraFactory(this._width, this._height);
   }
-  // observe the interactor for user interactions (mouse-movements etc.)
+  if (!_camera) {
+    _camera = new X.camera3D(this._width, this._height);
+
+    if (_contextName == '2d') {
+      _camera = new X.camera2D(this._width, this._height);
+    }
+  }
+  //observe the interactor for user interactions (mouse-movements etc.)
   _camera.observe(this._interactor);
+  
   // ..listen to render requests from the camera
   // these get fired after user-interaction and camera re-positioning to re-draw
   // all objects
