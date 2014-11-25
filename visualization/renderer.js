@@ -528,7 +528,7 @@ X.renderer.prototype.__defineSetter__('interactorFactory', function(_interactorF
  */
 X.renderer.prototype.__defineSetter__('cameraFactory', function(_cameraFactory) {
 	
- this.cameraFactory = cameraFactory;
+ this._cameraFactory = _cameraFactory;
 
 });
 
