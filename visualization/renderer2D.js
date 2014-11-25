@@ -1245,6 +1245,16 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
     _y = -_buf;
 
   }
+  
+  // Rotate on the Z axis due to view matrix.
+  var _thetaZ = Math.atan2(_view[1*4 + 0], _view[0*4 + 0]);
+  this._context.rotate(_thetaZ);
+  if (_thetaZ != 0) {
+	var _oldX = _x;
+	var _oldY = _y;
+	_x = Math.cos(_thetaZ) * _oldX + Math.sin(_thetaZ) * _oldY;
+	_y = -Math.sin(_thetaZ) * _oldX + Math.cos(_thetaZ) * _oldY;
+  }
 
   var _offset_x = -_sliceWidth * this._sliceWidthSpacing / 2 + _x;
   var _offset_y = -_sliceHeight * this._sliceHeightSpacing / 2 + _y;

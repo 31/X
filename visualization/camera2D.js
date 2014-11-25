@@ -103,6 +103,12 @@ X.camera2D.prototype.rotate = function(distance) {
   
 };
 
+X.camera2D.prototype.swivel = function(angle) {
+
+  X.matrix.rotateZ(this._view, angle);
+	
+}
+
 /**
  * @inheritDoc
  */
