@@ -789,6 +789,21 @@ X.renderer2D.prototype.onSliceNavigation = function() {
 
 
 /**
+ * Rotates a 2d vector given by the x and y components by the rotation
+ * specified in the view matrix.
+ */
+X.renderer2D.prototype.rotate2DVector_ = function(view, x, y) {
+  
+  // Partially apply the view matrix: use the elements that determine rotation.
+  return [
+    view[0] * x + view[4] * y,
+    view[1] * x + view[5] * y
+  ];
+
+}
+
+
+/**
  * Convert viewport (canvas) coordinates to volume (index) coordinates.
  *
  * @param x The x coordinate.
@@ -848,6 +863,12 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
   var _sliceHeightScaled = _sliceHeight * _sliceHSpacing *
     this._normalizedScale;
 
+  // Rotate the slice dimensions from view matrix.
+  // Only works for 90-degree rotations.
+  var _rotatedSliceDimensions = this.rotate2DVector_(_view, _sliceWidthScaled, _sliceHeightScaled);
+  _sliceWidthScaled = Math.abs(_rotatedSliceDimensions[0]);
+  _sliceHeightScaled = Math.abs(_rotatedSliceDimensions[1]);
+
   // the image borders on the left and top in canvas coordinates
   var _image_left2xy = _center[0] - (_sliceWidthScaled / 2);
   var _image_top2xy = _center[1] - (_sliceHeightScaled / 2);
@@ -861,6 +882,11 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
 
     var _xNorm = (x - _image_left2xy)/ _sliceWidthScaled;
     var _yNorm = (y - _image_top2xy)/ _sliceHeightScaled;
+
+    // Rotate on the Z axis due to view matrix.
+    var _rotatedNorm = this.rotate2DVector_(_view, _xNorm - 0.5, _yNorm - 0.5);
+    _xNorm = _rotatedNorm[0] + 0.5;
+    _yNorm = _rotatedNorm[1] + 0.5;
 
     _x = _xNorm*_sliceWidth;
     _y = _yNorm*_sliceHeight;
@@ -1249,12 +1275,11 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   // Rotate on the Z axis due to view matrix.
   var _thetaZ = Math.atan2(_view[1*4 + 0], _view[0*4 + 0]);
   this._context.rotate(_thetaZ);
-  if (_thetaZ != 0) {
-	var _oldX = _x;
-	var _oldY = _y;
-	_x = Math.cos(_thetaZ) * _oldX + Math.sin(_thetaZ) * _oldY;
-	_y = -Math.sin(_thetaZ) * _oldX + Math.cos(_thetaZ) * _oldY;
-  }
+  
+  // Rotate _x and _y based on _view.
+  var _rotatedXY = this.rotate2DVector_(_view, _x, _y);
+  _x = _rotatedXY[0];
+  _y = _rotatedXY[1];
 
   var _offset_x = -_sliceWidth * this._sliceWidthSpacing / 2 + _x;
   var _offset_y = -_sliceHeight * this._sliceHeightSpacing / 2 + _y;
