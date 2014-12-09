@@ -162,6 +162,13 @@ X.renderer = function() {
   this._loader = null;
 
   /**
+   * A factory that can create a loader when init is called.
+   *
+   * @public
+   */
+  this._loaderFactory = null;
+
+  /**
    * A locked flag for synchronizing.
    *
    * @type {boolean}
@@ -548,6 +555,16 @@ X.renderer.prototype.__defineGetter__('loadingCompleted', function() {
 
 
 /**
+ * Sets the factory used to create the loader in init.
+ */
+X.renderer.prototype.__defineSetter__('loaderFactory', function(_loaderFactory) {
+  
+ this._loaderFactory = _loaderFactory;
+
+});
+
+
+/**
  * Get the container of this renderer.
  *
  * @return {!Element|HTMLBodyElement} The container of this renderer.
@@ -747,7 +764,11 @@ X.renderer.prototype.init = function(_contextName) {
   //
   // Step 1b: Configure the X.loader
   //
-  this._loader = new X.loader();
+  if (this._loaderFactory) {
+    this._loader = this._loaderFactory();
+  }
+  // If the loader factory didn't create anything, create a default loader.
+  this._loader = this._loader || new X.loader();
 
   // listen to a progress event which gets fired during loading whenever
   // progress was made
