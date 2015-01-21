@@ -308,8 +308,12 @@ X.renderer.prototype.onComputingEnd = function(event) {
 
     } // if progressBar still exists
 
-  } // if progressBar is enabled
+  } else { // if progressBar is disabled
 
+    // Restart the rendering loop
+    this.render();
+
+  }
 };
 
 
