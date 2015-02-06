@@ -922,7 +922,8 @@ X.parser.reslice2 = function(_sliceOrigin, _sliceXYSpacing, _sliceNormal, _color
         }
         else {
 
-          pixelValue_r = pixelValue_g = pixelValue_b = 255 * (pixval / object._max);
+          pixelValue_r = pixelValue_g = pixelValue_b =
+            255 * ((pixval - object._min) / (object._max - object.min));
           pixelValue_a = 255;
         }
 
