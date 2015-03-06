@@ -234,6 +234,9 @@ X.renderer = function() {
    * @protected
    */
   this._AnimationFrameID = -1;
+  
+  this._cancel = false;
+  
 
   window.console
       .log('XTK release 10 -- ###TIMESTAMP### -- http://www.goXTK.com -- @goXTK');
@@ -619,7 +622,6 @@ X.renderer.prototype.__defineSetter__('container', function(container) {
   this._container = _container;
 
 });
-
 
 /**
  * Resets the view according to the global bounding box of all associated
@@ -1208,9 +1210,15 @@ X.renderer.prototype.render = function() {
     }
 
   }
+  
   //
   // END OF LOADING
   //
+  
+  if (this._cancel) {
+	  this._cancel = false;
+	  return;
+  }
 
   //
   // CURTAIN UP! LET THE SHOW BEGIN..

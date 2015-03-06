@@ -1395,6 +1395,7 @@ X.volume.prototype.__defineGetter__('zColor', function() {
 
 });
 
+
 /**
  * Recompute the slice information.
  * Only supports normals and color for now.
