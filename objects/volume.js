@@ -1416,17 +1416,16 @@ X.volume.prototype.sliceInfoChanged = function(index){
   for(var i=0; i<this._children[index]._children.length; i++){
     if(typeof this._children[index]._children[i] != 'undefined'){
 
-      if(this.hasLabelMap) {
-        // add it to create the texture
+      this._children[index]._children[i].remove();
+      this._children[index]._children[i] = null;
+    }
+    if(this.hasLabelMap) {
+      if (goog.isDefAndNotNull(this._labelmap._children[index]._children[i])) {
+        // Recreate labelmap's children too, to create the texture.
         this._labelmap._children[index]._children[i].remove();
         this._labelmap._children[index]._children[i] = null;
       }
-
-      this._children[index]._children[i].remove();
-      this._children[index]._children[i] = null;
-
     }
-
   }
 
   // UPDATE SLICE INFO

@@ -227,14 +227,14 @@ X.shaders = function() {
   t2 += '             if (labelmapOpacity < 1.0) {\n'; // transparent label map
   t2 += '               textureSum = mix(texture2, textureSum, 1.0 - labelmapOpacity);\n';
   t2 += '             } else {\n';
-  t2 += '               textureSum = texture2;\n'; // fully opaque label map
+  t2 += '               textureSum = mix(texture2, textureSum, 1.0 - texture2.a);\n'; // fully opaque label map
   t2 += '             }\n';
   t2 += '           }\n';
   t2 += '         } else {\n';  // if not only one color, always mix
   t2 += '           if (labelmapOpacity < 1.0) {\n'; // transparent label map
   t2 += '             textureSum = mix(texture2, textureSum, 1.0 - labelmapOpacity);\n';
   t2 += '           } else {\n';
-  t2 += '             textureSum = texture2;\n'; // fully opaque label map
+  t2 += '             textureSum = mix(texture2, textureSum, 1.0 - texture2.a);\n'; // fully opaque label map
   t2 += '           }\n';
   t2 += '         }\n';
 

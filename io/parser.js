@@ -973,6 +973,13 @@ X.parser.reslice2 = function(_sliceOrigin, _sliceXYSpacing, _sliceNormal, _color
   sliceXY._visible = false;
   sliceXY._volume = /** @type {X.volume} */(object);
 
+  if (object.hasLabelMap) {
+    // if this object has a labelmap,
+    // we have it loaded at this point (for sure)
+    // ..so we can attach it as the second texture to this slice
+    sliceXY._labelmap = object._labelmap._children[0]._children[Math.floor(object._childrenInfo[0]._nb/2)]._texture;
+  }
+
   // for labelmaps, don't create the borders since this would create them 2x
   // hasLabelMap == true means we are the volume
   // hasLabelMap == false means we are the labelmap
