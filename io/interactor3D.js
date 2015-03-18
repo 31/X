@@ -66,9 +66,9 @@ goog.inherits(X.interactor3D, X.interactor);
 /**
  * @inheritDoc
  */
-X.interactor3D.prototype.onMouseWheel_ = function(event) {
+X.interactor3D.prototype.onMouseWheelCallback = function(event) {
 
-  goog.base(this, 'onMouseWheel_', event);
+  goog.base(this, 'onMouseWheelCallback', event);
   
   // create a new zoom event
   var e = new X.event.ZoomEvent();

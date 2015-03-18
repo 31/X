@@ -312,7 +312,7 @@ X.interactor.prototype.init = function() {
     this._mouseWheelHandler = new goog.events.MouseWheelHandler(this._element);
 
     this._mouseWheelListener = goog.events.listen(this._mouseWheelHandler,
-        goog.events.MouseWheelHandler.EventType.MOUSEWHEEL, this.onMouseWheel_
+        goog.events.MouseWheelHandler.EventType.MOUSEWHEEL, this.onMouseWheelCallback
             .bind(this));
 
   } else {
@@ -328,11 +328,11 @@ X.interactor.prototype.init = function() {
 
     // mouse down
     this._mouseDownListener = goog.events.listen(this._element,
-        goog.events.EventType.MOUSEDOWN, this.onMouseDown_.bind(this));
+        goog.events.EventType.MOUSEDOWN, this.onMouseDownCallback.bind(this));
 
     // mouse up
     this._mouseUpListener = goog.events.listen(this._element,
-        goog.events.EventType.MOUSEUP, this.onMouseUp_.bind(this));
+        goog.events.EventType.MOUSEUP, this.onMouseUpCallback.bind(this));
 
   } else {
 
@@ -390,15 +390,15 @@ X.interactor.prototype.init = function() {
 
     // touch start event
     this._touchStartListener = goog.events.listen(this._element,
-        goog.events.EventType.TOUCHSTART, this.onTouchStart_.bind(this));
+        goog.events.EventType.TOUCHSTART, this.onTouchStartCallback.bind(this));
 
     // touch move event
     this._touchMoveListener = goog.events.listen(this._element,
-        goog.events.EventType.TOUCHMOVE, this.onTouchMove_.bind(this));
+        goog.events.EventType.TOUCHMOVE, this.onTouchMoveCallback.bind(this));
 
     // touch end event
     this._touchEndListener = goog.events.listen(this._element,
-        goog.events.EventType.TOUCHEND, this.onTouchEnd_.bind(this));
+        goog.events.EventType.TOUCHEND, this.onTouchEndCallback.bind(this));
 
   } else {
 
@@ -425,11 +425,11 @@ X.interactor.prototype.init = function() {
 
   // mouse movement inside the element
   this._mouseMoveListener = goog.events.listen(this._element,
-      goog.events.EventType.MOUSEMOVE, this.onMouseMovementInside_.bind(this));
+      goog.events.EventType.MOUSEMOVE, this.onMouseMovementInsideCallback.bind(this));
 
   // mouse movement outside the element
   this._mouseOutListener = goog.events.listen(this._element,
-      goog.events.EventType.MOUSEOUT, this.onMouseMovementOutside_.bind(this));
+      goog.events.EventType.MOUSEOUT, this.onMouseMovementOutsideCallback.bind(this));
 
 };
 
@@ -440,7 +440,7 @@ X.interactor.prototype.init = function() {
  * @param {Event} event The browser fired event.
  * @protected
  */
-X.interactor.prototype.onMouseDown_ = function(event) {
+X.interactor.prototype.onMouseDownCallback = function(event) {
 
   if (event.button == goog.events.BrowserEvent.MouseButton.LEFT) {
 
@@ -492,7 +492,7 @@ X.interactor.prototype.onMouseDown = function(left, middle, right) {
  * @param {Event} event The browser fired event.
  * @protected
  */
-X.interactor.prototype.onMouseUp_ = function(event) {
+X.interactor.prototype.onMouseUpCallback = function(event) {
 
   if (event.button == goog.events.BrowserEvent.MouseButton.LEFT) {
 
@@ -557,7 +557,7 @@ X.interactor.prototype.onMouseUp = function(left, middle, right) {
  * @param {Event} event The browser fired event.
  * @protected
  */
-X.interactor.prototype.onMouseMovementOutside_ = function(event) {
+X.interactor.prototype.onMouseMovementOutsideCallback = function(event) {
 
   // reset the click flags
   this._mouseInside = false;
@@ -601,7 +601,7 @@ X.interactor.prototype.onMouseMove = function(event) {
  * @param {goog.events.Event} event The browser fired event.
  * @protected
  */
-X.interactor.prototype.onTouchStart_ = function(event) {
+X.interactor.prototype.onTouchStartCallback = function(event) {
 
   // prevent the default
   event.preventDefault();
@@ -616,7 +616,7 @@ X.interactor.prototype.onTouchStart_ = function(event) {
   this._lastTouchPosition = new X.vector(event.clientX, event.clientY, 0);
 
   // get ready for a hover event
-  this._touchHoverTrigger = setTimeout(this.onTouchHover_.bind(this, event),
+  this._touchHoverTrigger = setTimeout(this.onTouchHoverCallback.bind(this, event),
       500);
 
 };
@@ -641,7 +641,7 @@ X.interactor.prototype.onTouchStart = function(x, y) {
  *
  * @param {!goog.events.Event} event The browser fired event.
  */
-X.interactor.prototype.onTouchHover_ = function(event) {
+X.interactor.prototype.onTouchHoverCallback = function(event) {
 
   // execute user definable callback
   eval("this.onTouchHover(" + event.clientX + "," + event.clientY + ")");
@@ -719,7 +719,7 @@ X.interactor.prototype.resetTouchHover_ = function() {
  *
  * @param {Event} event The browser fired event.
  */
-X.interactor.prototype.onTouchEnd_ = function(event) {
+X.interactor.prototype.onTouchEndCallback = function(event) {
 
   // prevent the default
   event.preventDefault();
@@ -749,7 +749,7 @@ X.interactor.prototype.onTouchEnd = function() {
  *
  * @param {goog.events.Event} event The browser fired event.
  */
-X.interactor.prototype.onTouchMove_ = function(event) {
+X.interactor.prototype.onTouchMoveCallback = function(event) {
 
   // prevent the default
   event.preventDefault();
@@ -932,7 +932,7 @@ X.interactor.prototype.onTouchMove = function(event) {
  * @param {Event} event The browser fired event.
  * @protected
  */
-X.interactor.prototype.onMouseMovementInside_ = function(event) {
+X.interactor.prototype.onMouseMovementInsideCallback = function(event) {
 
   this['mousemoveEvent'] = event; // we need to buffer the event to run eval in
   // advanced compilation
@@ -1117,7 +1117,7 @@ X.interactor.prototype.onMouseWheel = function(event) {
  * @param {Event} event The browser fired event.
  * @protected
  */
-X.interactor.prototype.onMouseWheel_ = function(event) {
+X.interactor.prototype.onMouseWheelCallback = function(event) {
 
   this['mouseWheelEvent'] = event;
   eval("this.onMouseWheel(this['mouseWheelEvent'])");

@@ -65,9 +65,9 @@ goog.inherits(X.interactor2D, X.interactor);
 /**
  * @inheritDoc
  */
-X.interactor2D.prototype.onMouseWheel_ = function(event) {
+X.interactor2D.prototype.onMouseWheelCallback = function(event) {
 
-  goog.base(this, 'onMouseWheel_', event);
+  goog.base(this, 'onMouseWheelCallback', event);
   
   // create a new scroll event
   //
